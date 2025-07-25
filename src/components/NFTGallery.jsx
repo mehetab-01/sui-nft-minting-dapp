@@ -1,5 +1,23 @@
-const NFTGallery = ({ nfts, loading, account, onRefresh }) => (
-  <div className="bg-gray-900/60 border border-gray-700 rounded-3xl p-8 backdrop-blur-lg shadow-2xl animate-fade-in">
+import { useState } from 'react';
+import NFTDetailsModal from './NFTDetailsModal';
+
+const NFTGallery = ({ nfts, loading, account, onRefresh }) => {
+  const [selectedNFT, setSelectedNFT] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (nft) => {
+    setSelectedNFT(nft);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedNFT(null);
+  };
+
+  return (
+    <>
+      <div className="bg-gray-900/60 border border-gray-700 rounded-3xl p-8 backdrop-blur-lg shadow-2xl animate-fade-in">
     <div className="flex items-center justify-between mb-8 animate-slide-down">
       <div>
         <h2 className="text-3xl font-bold text-white mb-3">Your Collection</h2>
@@ -54,8 +72,9 @@ const NFTGallery = ({ nfts, loading, account, onRefresh }) => (
         {nfts.map((nft, index) => (
           <div 
             key={nft.id} 
-            className="bg-gray-800/50 border border-gray-600 rounded-2xl overflow-hidden hover:border-blue-500 hover-lift transition-all duration-300 group animate-scale-in"
+            className="bg-gray-800/50 border border-gray-600 rounded-2xl overflow-hidden hover:border-blue-500 hover-lift transition-all duration-300 group animate-scale-in cursor-pointer"
             style={{ animationDelay: `${index * 100}ms` }}
+            onClick={() => openModal(nft)}
           >
             <div className="aspect-square bg-gray-700/50 overflow-hidden animate-shimmer">
               <img
@@ -96,6 +115,15 @@ const NFTGallery = ({ nfts, loading, account, onRefresh }) => (
       </div>
     )}
   </div>
+
+  {/* NFT Details Modal */}
+  <NFTDetailsModal 
+    nft={selectedNFT}
+    isOpen={isModalOpen}
+    onClose={closeModal}
+  />
+</>
 );
+};
 
 export default NFTGallery;
