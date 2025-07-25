@@ -252,7 +252,7 @@ const App = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4 animate-slide-in-left">
               <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center hover-glow animate-pulse-custom">
-                <img src="/favicon.ico.ico" alt="Sui NFT Studio" className="w-8 h-8" />
+                <img src="/favicon.ico" alt="Sui NFT Studio" className="w-8 h-8" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-white">
