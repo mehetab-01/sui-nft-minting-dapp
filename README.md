@@ -2,6 +2,12 @@
 
 A modern, feature-rich React dApp for minting and managing NFTs on the Sui blockchain with **configurable smart contract support**.
 
+## 🌐 **Live Demo**
+
+**🔗 [Try it now: https://sui-nft-minter.vercel.app](https://sui-nft-minter.vercel.app)**
+
+Experience the universal Sui NFT minting platform live! Connect your wallet, configure your contract, and start minting NFTs on Sui testnet.
+
 ## ✨ Features
 
 ### 🎨 **Universal Contract Support**
@@ -126,13 +132,24 @@ npm run lint         # Run ESLint
 
 ## 🚀 Deployment
 
+### 🌐 **Live Production Deployment**
+
+**🔗 Live App**: https://sui-nft-minter.vercel.app
+
+This app is automatically deployed on Vercel with:
+- ✅ **Production-ready** build optimization
+- ✅ **Auto-deployment** from GitHub main branch
+- ✅ **CDN distribution** for global performance
+- ✅ **HTTPS** secure connection
+- ✅ **Mobile responsive** on all devices
+
 ### Build for Production
 ```bash
 npm run build
 ```
 
 ### Deploy Options
-- **Vercel**: Connect GitHub repo for auto-deployment
+- **Vercel** ⭐ (Currently used): Connect GitHub repo for auto-deployment
 - **Netlify**: Drag & drop the `dist` folder
 - **GitHub Pages**: Use GitHub Actions for CI/CD
 - **IPFS**: Decentralized hosting option
