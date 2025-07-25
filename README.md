@@ -46,7 +46,7 @@ Experience the universal Sui NFT minting platform live! Connect your wallet, con
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/sui-nft-minting-dapp.git
+git clone https://github.com/mehetab-01/sui-nft-minting-dapp.git
 cd sui-nft-minting-dapp
 
 # Install dependencies
