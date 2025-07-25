@@ -440,9 +440,20 @@ const App = () => {
       {/* Footer */}
       <footer className="relative z-10 border-t border-gray-800/50 mt-20">
         <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="text-center">
+          <div className="text-center space-y-2">
             <p className="text-gray-400 text-sm">
               Powered by <span className="text-white font-medium">Sui Network</span>
+            </p>
+            <p className="text-gray-500 text-xs">
+              Created by{' '}
+              <a 
+                href="https://github.com/mehetab-01" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 transition-colors hover:underline"
+              >
+                @mehetab-01
+              </a>
             </p>
           </div>
         </div>
