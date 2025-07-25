@@ -41,17 +41,6 @@ const App = () => {
   const [mintCapId, setMintCapId] = useState(null);
   const [mintCapError, setMintCapError] = useState('');
 
-  // Update page title based on app state
-  useEffect(() => {
-    if (account && nfts.length > 0) {
-      document.title = `Sui NFT Studio - ${nfts.length} NFT${nfts.length !== 1 ? 's' : ''} Minted`;
-    } else if (account) {
-      document.title = 'Sui NFT Studio - Wallet Connected';
-    } else {
-      document.title = 'Sui NFT Studio - Universal NFT Minting Platform';
-    }
-  }, [account, nfts.length]);
-
   // Find mint capabilities owned by the connected wallet
   const findMintCap = async () => {
     if (!account) return;
@@ -262,12 +251,8 @@ const App = () => {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4 animate-slide-in-left">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center hover-glow animate-pulse-custom p-2">
-                <img 
-                  src="/favicon.ico.ico" 
-                  alt="Sui NFT Studio" 
-                  className="w-full h-full object-contain filter brightness-0 invert"
-                />
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center hover-glow animate-pulse-custom">
+                <span className="text-white text-xl font-bold">S</span>
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-white">
