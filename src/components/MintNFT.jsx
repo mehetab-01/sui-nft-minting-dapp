@@ -4,7 +4,8 @@ const MintNFTForm = ({
   imgUrl, setImgUrl, 
   selectedFile, uploading, handleFileSelect, clearSelectedFile,
   mintNFT, previewNFT, 
-  loading, error, success 
+  loading, error, success,
+  gasEstimate, estimatingGas
 }) => (
   <div className="bg-gray-900/60 border border-gray-700 rounded-3xl p-6 sm:p-8 backdrop-blur-lg shadow-2xl animate-fade-in hover-lift">
     <div className="mb-6 sm:mb-8 animate-slide-down">
@@ -162,6 +163,67 @@ const MintNFTForm = ({
         Preview
       </button>
     </div>
+
+    {/* Gas Estimation */}
+    {(gasEstimate || estimatingGas) && (
+      <div className="mt-4 sm:mt-6 bg-gray-800/50 border border-gray-600 rounded-xl p-4 animate-slide-in-up">
+        <div className="flex items-center space-x-2 mb-3">
+          <span className="text-lg">⛽</span>
+          <h3 className="text-sm font-semibold text-gray-300">Gas Estimation</h3>
+          {estimatingGas && (
+            <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          )}
+        </div>
+        
+        {estimatingGas ? (
+          <div className="text-gray-400 text-sm">Calculating gas costs...</div>
+        ) : gasEstimate?.error ? (
+          <div className="space-y-2">
+            <div className="text-red-400 text-sm">{gasEstimate.error}</div>
+            {gasEstimate.fallback && (
+              <div className="bg-yellow-900/20 border border-yellow-600 rounded-lg p-3 mt-2">
+                <div className="flex items-center space-x-2 mb-2">
+                  <span className="text-yellow-400">💡</span>
+                  <span className="text-yellow-400 text-sm font-medium">Estimated Cost</span>
+                </div>
+                <div className="text-yellow-200 text-sm">
+                  Typical NFT minting cost: <span className="font-mono">~0.001-0.005 SUI</span>
+                </div>
+                <div className="text-yellow-300 text-xs mt-1">
+                  This is a rough estimate based on similar transactions.
+                </div>
+              </div>
+            )}
+          </div>
+        ) : gasEstimate && (
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400 text-sm">Total Cost:</span>
+              <span className="text-white font-mono text-sm">~{gasEstimate.totalCost.toFixed(6)} SUI</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-500 text-xs">Computation:</span>
+              <span className="text-gray-400 font-mono text-xs">{gasEstimate.computationCost.toFixed(6)} SUI</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-500 text-xs">Storage:</span>
+              <span className="text-gray-400 font-mono text-xs">{gasEstimate.storageCost.toFixed(6)} SUI</span>
+            </div>
+            {gasEstimate.storageRebate > 0 && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-500 text-xs">Storage Rebate:</span>
+                <span className="text-green-400 font-mono text-xs">-{gasEstimate.storageRebate.toFixed(6)} SUI</span>
+              </div>
+            )}
+            <div className="mt-2 pt-2 border-t border-gray-700">
+              <p className="text-xs text-gray-500">
+                💡 This is an estimate. Actual cost may vary slightly.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    )}
   </div>
 );
 

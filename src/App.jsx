@@ -28,6 +28,8 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(null);
+  const [gasEstimate, setGasEstimate] = useState(null);
+  const [estimatingGas, setEstimatingGas] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -309,18 +311,137 @@ const App = () => {
     }
   };
 
-  // Preview NFT
-  const previewNFT = () => {
-    if (!name || !description || !imgUrl) {
+  // Estimate gas for minting transaction
+  const estimateGas = async () => {
+    console.log('Starting gas estimation...');
+    console.log('Account:', account?.address);
+    console.log('Mint Cap ID:', mintCapId);
+    
+    if (!account) {
+      setGasEstimate({ 
+        error: 'Connect your wallet first to estimate gas costs',
+        fallback: true 
+      });
+      return null;
+    }
+
+    if (!mintCapId) {
+      setGasEstimate({ 
+        error: 'No mint capability found for your wallet',
+        fallback: true 
+      });
+      return null;
+    }
+
+    try {
+      setEstimatingGas(true);
+      
+      const transaction = new Transaction();
+      const imageUrl = selectedFile ? `ipfs://sample-hash` : (imgUrl || "https://example.com/image.jpg");
+      
+      console.log('Building transaction with:', {
+        package: contractAddress,
+        module: moduleName,
+        function: functionName,
+        mintCapId,
+        imageUrl
+      });
+
+      transaction.moveCall({
+        package: contractAddress,
+        module: moduleName,
+        function: functionName,
+        arguments: [
+          transaction.object(mintCapId),
+          transaction.pure.string(name || "Sample NFT"),
+          transaction.pure.string(description || "Sample Description"),
+          transaction.pure.string(imageUrl),
+        ],
+      });
+
+      // Set sender for the transaction
+      transaction.setSender(account.address);
+
+      // Build transaction
+      const builtTransaction = await transaction.build({ 
+        client,
+        onlyTransactionKind: false 
+      });
+
+      console.log('Built transaction, running dry run...');
+
+      // Dry run to get gas estimation
+      const dryRun = await client.dryRunTransactionBlock({
+        transactionBlock: builtTransaction,
+      });
+
+      console.log('Dry run result:', dryRun);
+
+      if (dryRun.effects.status.status === 'success') {
+        const gasUsed = dryRun.effects.gasUsed;
+        const computationCost = parseInt(gasUsed.computationCost) || 0;
+        const storageCost = parseInt(gasUsed.storageCost) || 0;
+        const storageRebate = parseInt(gasUsed.storageRebate || 0);
+        
+        const totalGas = computationCost + storageCost - storageRebate;
+        
+        // Convert from MIST to SUI (1 SUI = 1,000,000,000 MIST)
+        const gasCostInSui = totalGas / 1000000000;
+        
+        console.log('Gas estimation successful:', {
+          totalGas,
+          gasCostInSui,
+          computationCost,
+          storageCost,
+          storageRebate
+        });
+
+        setGasEstimate({
+          totalCost: gasCostInSui,
+          computationCost: computationCost / 1000000000,
+          storageCost: storageCost / 1000000000,
+          storageRebate: storageRebate / 1000000000
+        });
+      } else {
+        console.error('Gas estimation failed:', dryRun.effects.status);
+        const errorMsg = dryRun.effects.status.error || 'Transaction simulation failed';
+        setGasEstimate({ 
+          error: `Simulation failed: ${errorMsg}`,
+          fallback: true 
+        });
+      }
+    } catch (error) {
+      console.error('Error estimating gas:', error);
+      
+      // Provide fallback estimate with better error handling
+      setGasEstimate({ 
+        error: 'Unable to get exact estimate. Using typical costs.',
+        fallback: true
+      });
+    } finally {
+      setEstimatingGas(false);
+    }
+  };
+
+  // Preview NFT with gas estimation
+  const previewNFT = async () => {
+    const finalImageUrl = selectedFile ? URL.createObjectURL(selectedFile) : imgUrl;
+    
+    if (!name || !description || !finalImageUrl) {
       setError('Please fill in all fields to preview');
       return;
     }
-    if (!imgUrl.startsWith('http')) {
-      setError('Please provide a valid image URL (starting with http)');
-      return;
-    }
-    setPreview({ name, description, img_url: imgUrl });
+    
+    setPreview({ name, description, img_url: finalImageUrl });
     setError('');
+    
+    // Debug information
+    console.log('Preview - Account:', account?.address);
+    console.log('Preview - Mint Cap ID:', mintCapId);
+    console.log('Preview - Contract:', contractAddress, moduleName, functionName);
+    
+    // Estimate gas cost
+    await estimateGas();
   };
 
   useEffect(() => {
@@ -526,6 +647,8 @@ const App = () => {
               loading={loading}
               error={error}
               success={success}
+              gasEstimate={gasEstimate}
+              estimatingGas={estimatingGas}
             />
           </div>
 
