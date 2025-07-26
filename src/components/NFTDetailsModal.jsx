@@ -32,6 +32,55 @@ const NFTDetailsModal = ({ nft, isOpen, onClose }) => {
     return `${address.slice(0, 6)}...${address.slice(-6)}`;
   };
 
+  const shareToTwitter = () => {
+    const text = `Check out my NFT "${nft.name}" minted on the Sui blockchain! 🚀✨`;
+    const url = `https://sui-nft-miner.vercel.app`;
+    const hashtags = 'SuiNFT,NFT,Blockchain,Web3,DigitalArt';
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${hashtags}`;
+    window.open(twitterUrl, '_blank', 'width=600,height=400');
+  };
+
+  const shareToLinkedIn = () => {
+    const text = `🚀 Just minted my NFT "${nft.name}" on the Sui blockchain! 
+
+${nft.description || 'Check out this amazing digital asset!'}
+
+Built using a universal NFT minting platform. The future of digital ownership is here! 
+
+#SuiNFT #NFT #Blockchain #Web3 #DigitalArt #Crypto
+
+Explore the platform: https://sui-nft-miner.vercel.app`;
+    
+    const linkedInUrl = `https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(text)}`;
+    window.open(linkedInUrl, '_blank', 'width=600,height=400');
+  };
+
+  const handleGenericShare = async () => {
+    const shareData = {
+      title: `NFT: ${nft.name}`,
+      text: `Check out my NFT "${nft.name}" minted on the Sui blockchain!`,
+      url: 'https://sui-nft-miner.vercel.app'
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log('Share cancelled or failed:', err);
+      }
+    } else {
+      // Fallback: copy to clipboard
+      const shareText = `Check out my NFT "${nft.name}" minted on the Sui blockchain! 🚀✨\n\n${nft.description || ''}\n\nExplore more at: https://sui-nft-miner.vercel.app`;
+      try {
+        await navigator.clipboard.writeText(shareText);
+        setCopySuccess('share');
+        setTimeout(() => setCopySuccess(''), 2000);
+      } catch (err) {
+        console.error('Failed to copy share text:', err);
+      }
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4">
       {/* Backdrop */}
@@ -85,6 +134,61 @@ const NFTDetailsModal = ({ nft, isOpen, onClose }) => {
               >
                 {copySuccess === 'image' ? '✓ Copied!' : '📋 Copy URL'}
               </button>
+            </div>
+
+            {/* Social Sharing */}
+            <div className="space-y-2 sm:space-y-3">
+              <p className="text-xs sm:text-sm text-gray-400 text-center font-medium">
+                ✨ Showcase Your NFT
+              </p>
+              <div className="flex gap-2 sm:gap-3">
+                {/* Twitter/X Share */}
+                <button
+                  onClick={shareToTwitter}
+                  className="flex-1 px-3 sm:px-4 py-2 bg-white/10 border border-sky-500 text-sky-300 rounded-xl hover:bg-white/20 hover:border-sky-400 transition-colors text-xs sm:text-sm font-medium flex items-center justify-center gap-2"
+                  title="Share on X (Twitter)"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                  <span>Twitter</span>
+                </button>
+
+                {/* LinkedIn Share */}
+                <button
+                  onClick={shareToLinkedIn}
+                  className="flex-1 px-3 sm:px-4 py-2 bg-blue-600/20 border border-blue-600 text-blue-400 rounded-xl hover:bg-blue-600/30 transition-colors text-xs sm:text-sm font-medium flex items-center justify-center gap-2"
+                  title="Share on LinkedIn"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                  <span>LinkedIn</span>
+                </button>
+
+                {/* Generic Share */}
+                <button
+                  onClick={handleGenericShare}
+                  className="flex-1 px-3 sm:px-4 py-2 bg-green-600/20 border border-green-600 text-green-400 rounded-xl hover:bg-green-600/30 transition-colors text-xs sm:text-sm font-medium flex items-center justify-center gap-2"
+                  title="Share or Copy"
+                >
+                  {copySuccess === 'share' ? (
+                    <>
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+                      </svg>
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                      </svg>
+                      <span>Share</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
