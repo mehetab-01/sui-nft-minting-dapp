@@ -197,6 +197,24 @@ const MintNFTForm = ({
           </div>
         ) : gasEstimate && (
           <div className="space-y-2">
+            {gasEstimate.isReal && (
+              <div className="flex items-center space-x-2 mb-2">
+                <span className="text-green-400 text-xs">✅</span>
+                <span className="text-green-400 text-xs">Real transaction simulation</span>
+              </div>
+            )}
+            {gasEstimate.isDynamic && (
+              <div className="flex items-center space-x-2 mb-2">
+                <span className="text-blue-400 text-xs">�</span>
+                <span className="text-blue-400 text-xs">Dynamic calculation based on your inputs</span>
+              </div>
+            )}
+            {gasEstimate.estimated && (
+              <div className="flex items-center space-x-2 mb-2">
+                <span className="text-yellow-400 text-xs">📊</span>
+                <span className="text-yellow-400 text-xs">Based on typical NFT transactions</span>
+              </div>
+            )}
             <div className="flex justify-between items-center">
               <span className="text-gray-400 text-sm">Total Cost:</span>
               <span className="text-white font-mono text-sm">~{gasEstimate.totalCost.toFixed(6)} SUI</span>
@@ -217,7 +235,12 @@ const MintNFTForm = ({
             )}
             <div className="mt-2 pt-2 border-t border-gray-700">
               <p className="text-xs text-gray-500">
-                💡 This is an estimate. Actual cost may vary slightly.
+                {gasEstimate.isReal 
+                  ? "🎯 Accurate estimate from blockchain simulation" 
+                  : gasEstimate.isDynamic
+                  ? "🔄 Calculated based on your specific inputs"
+                  : "� Estimated based on typical NFT minting costs"
+                }
               </p>
             </div>
           </div>

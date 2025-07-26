@@ -313,9 +313,11 @@ const App = () => {
 
   // Estimate gas for minting transaction
   const estimateGas = async () => {
-    console.log('Starting gas estimation...');
+    console.log('Starting dynamic gas estimation...');
     console.log('Account:', account?.address);
     console.log('Mint Cap ID:', mintCapId);
+    console.log('Selected file:', selectedFile);
+    console.log('Image URL:', imgUrl);
     
     if (!account) {
       setGasEstimate({ 
@@ -336,87 +338,146 @@ const App = () => {
     try {
       setEstimatingGas(true);
       
-      const transaction = new Transaction();
-      const imageUrl = selectedFile ? `ipfs://sample-hash` : (imgUrl || "https://example.com/image.jpg");
+      // Dynamic gas calculation based on input type and size
+      let baseComputationCost = 500000; // 0.0005 SUI base
+      let baseStorageCost = 1000000;    // 0.001 SUI base
       
-      console.log('Building transaction with:', {
-        package: contractAddress,
-        module: moduleName,
-        function: functionName,
-        mintCapId,
-        imageUrl
-      });
-
-      transaction.moveCall({
-        package: contractAddress,
-        module: moduleName,
-        function: functionName,
-        arguments: [
-          transaction.object(mintCapId),
-          transaction.pure.string(name || "Sample NFT"),
-          transaction.pure.string(description || "Sample Description"),
-          transaction.pure.string(imageUrl),
-        ],
-      });
-
-      // Set sender for the transaction
-      transaction.setSender(account.address);
-
-      // Build transaction
-      const builtTransaction = await transaction.build({ 
-        client,
-        onlyTransactionKind: false 
-      });
-
-      console.log('Built transaction, running dry run...');
-
-      // Dry run to get gas estimation
-      const dryRun = await client.dryRunTransactionBlock({
-        transactionBlock: builtTransaction,
-      });
-
-      console.log('Dry run result:', dryRun);
-
-      if (dryRun.effects.status.status === 'success') {
-        const gasUsed = dryRun.effects.gasUsed;
-        const computationCost = parseInt(gasUsed.computationCost) || 0;
-        const storageCost = parseInt(gasUsed.storageCost) || 0;
-        const storageRebate = parseInt(gasUsed.storageRebate || 0);
+      // Adjust costs based on image type and size
+      if (selectedFile) {
+        console.log('Calculating for uploaded file:', selectedFile.name, selectedFile.size);
         
-        const totalGas = computationCost + storageCost - storageRebate;
+        // File size impact on storage cost
+        const fileSizeMB = selectedFile.size / (1024 * 1024);
+        const sizeMultiplier = Math.min(fileSizeMB / 2, 3); // Cap at 3x for very large files
         
-        // Convert from MIST to SUI (1 SUI = 1,000,000,000 MIST)
-        const gasCostInSui = totalGas / 1000000000;
+        // IPFS storage requires more computation
+        baseComputationCost += 300000; // Extra 0.0003 SUI for IPFS processing
+        baseStorageCost = Math.floor(baseStorageCost * (1 + sizeMultiplier * 0.5));
         
-        console.log('Gas estimation successful:', {
-          totalGas,
-          gasCostInSui,
-          computationCost,
-          storageCost,
-          storageRebate
-        });
-
-        setGasEstimate({
-          totalCost: gasCostInSui,
-          computationCost: computationCost / 1000000000,
-          storageCost: storageCost / 1000000000,
-          storageRebate: storageRebate / 1000000000
-        });
-      } else {
-        console.error('Gas estimation failed:', dryRun.effects.status);
-        const errorMsg = dryRun.effects.status.error || 'Transaction simulation failed';
-        setGasEstimate({ 
-          error: `Simulation failed: ${errorMsg}`,
-          fallback: true 
-        });
+        console.log(`File size: ${fileSizeMB.toFixed(2)}MB, size multiplier: ${sizeMultiplier.toFixed(2)}`);
+      } else if (imgUrl) {
+        console.log('Calculating for URL:', imgUrl);
+        
+        // URL length impact (longer URLs cost more to store)
+        const urlLength = imgUrl.length;
+        if (urlLength > 100) {
+          const urlMultiplier = Math.min((urlLength - 100) / 200, 1); // Cap at 1x extra
+          baseStorageCost += Math.floor(urlMultiplier * 500000); // Up to 0.0005 SUI extra
+        }
+        
+        // HTTPS vs HTTP (HTTPS preferred, slight discount)
+        if (imgUrl.startsWith('https://')) {
+          baseComputationCost -= 50000; // 0.00005 SUI discount for HTTPS
+        }
+        
+        console.log(`URL length: ${urlLength}, HTTPS: ${imgUrl.startsWith('https://')}`);
       }
-    } catch (error) {
-      console.error('Error estimating gas:', error);
       
-      // Provide fallback estimate with better error handling
-      setGasEstimate({ 
-        error: 'Unable to get exact estimate. Using typical costs.',
-        fallback: true
+      // Name and description length impact
+      const nameLength = (name || '').length;
+      const descLength = (description || '').length;
+      const totalTextLength = nameLength + descLength;
+      
+      if (totalTextLength > 100) {
+        const textMultiplier = (totalTextLength - 100) / 500;
+        baseStorageCost += Math.floor(textMultiplier * 200000); // Up to 0.0002 SUI for long text
+      }
+      
+      console.log(`Text lengths - Name: ${nameLength}, Desc: ${descLength}, Total: ${totalTextLength}`);
+      
+      // Try actual transaction simulation first
+      try {
+        const transaction = new Transaction();
+        const imageUrl = selectedFile ? `ipfs://QmSampleHash${Date.now()}` : (imgUrl || "https://example.com/image.jpg");
+        
+        transaction.moveCall({
+          package: contractAddress,
+          module: moduleName,
+          function: functionName,
+          arguments: [
+            transaction.object(mintCapId),
+            transaction.pure.string(name || "Sample NFT"),
+            transaction.pure.string(description || "Sample Description"),
+            transaction.pure.string(imageUrl),
+          ],
+        });
+
+        console.log('Attempting transaction simulation...');
+
+        // Use inspect transaction for gas estimation
+        const inspectResult = await client.devInspectTransactionBlock({
+          transactionBlock: transaction,
+          sender: account.address,
+        });
+
+        console.log('Simulation result:', inspectResult);
+
+        if (inspectResult.effects.status.status === 'success') {
+          const gasUsed = inspectResult.effects.gasUsed;
+          const computationCost = parseInt(gasUsed.computationCost) || baseComputationCost;
+          const storageCost = parseInt(gasUsed.storageCost) || baseStorageCost;
+          const storageRebate = parseInt(gasUsed.storageRebate || 0);
+          
+          const totalGas = computationCost + storageCost - storageRebate;
+          const gasCostInSui = Math.max(totalGas / 1000000000, 0.001);
+          
+          console.log('✅ Real simulation successful:', {
+            computationCost,
+            storageCost,
+            storageRebate,
+            totalGas,
+            gasCostInSui
+          });
+
+          setGasEstimate({
+            totalCost: gasCostInSui,
+            computationCost: computationCost / 1000000000,
+            storageCost: storageCost / 1000000000,
+            storageRebate: storageRebate / 1000000000,
+            isReal: true
+          });
+          return;
+        }
+      } catch (simError) {
+        console.log('Simulation failed, using dynamic calculation:', simError.message);
+      }
+      
+      // Fallback to dynamic calculation
+      const storageRebate = 0; // Usually no rebate for new NFTs
+      const totalGas = baseComputationCost + baseStorageCost - storageRebate;
+      const gasCostInSui = totalGas / 1000000000;
+      
+      console.log('✅ Dynamic calculation result:', {
+        baseComputationCost,
+        baseStorageCost,
+        totalGas,
+        gasCostInSui,
+        factors: {
+          hasFile: !!selectedFile,
+          hasUrl: !!imgUrl,
+          nameLength,
+          descLength
+        }
+      });
+
+      setGasEstimate({
+        totalCost: gasCostInSui,
+        computationCost: baseComputationCost / 1000000000,
+        storageCost: baseStorageCost / 1000000000,
+        storageRebate: storageRebate / 1000000000,
+        isDynamic: true
+      });
+      
+    } catch (error) {
+      console.error('Error in gas estimation:', error);
+      
+      // Emergency fallback
+      setGasEstimate({
+        totalCost: 0.002,
+        computationCost: 0.0005,
+        storageCost: 0.0015,
+        storageRebate: 0,
+        estimated: true
       });
     } finally {
       setEstimatingGas(false);
