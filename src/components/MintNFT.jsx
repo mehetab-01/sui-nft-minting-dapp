@@ -1,4 +1,11 @@
-const MintNFTForm = ({ name, setName, description, setDescription, imgUrl, setImgUrl, mintNFT, previewNFT, loading, error, success }) => (
+const MintNFTForm = ({ 
+  name, setName, 
+  description, setDescription, 
+  imgUrl, setImgUrl, 
+  selectedFile, uploading, handleFileSelect, clearSelectedFile,
+  mintNFT, previewNFT, 
+  loading, error, success 
+}) => (
   <div className="bg-gray-900/60 border border-gray-700 rounded-3xl p-6 sm:p-8 backdrop-blur-lg shadow-2xl animate-fade-in hover-lift">
     <div className="mb-6 sm:mb-8 animate-slide-down">
       <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Create NFT</h2>
@@ -34,21 +41,85 @@ const MintNFTForm = ({ name, setName, description, setDescription, imgUrl, setIm
         />
       </div>
 
-      {/* Image URL */}
+      {/* Image Input */}
       <div className="group animate-slide-up stagger-3">
-        <label className="block text-sm font-medium text-gray-300 mb-2">
-          Image URL
+        <label className="block text-sm font-medium text-gray-300 mb-3">
+          NFT Image
         </label>
-        <input
-          type="url"
-          placeholder="https://example.com/image.jpg"
-          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 group-hover:border-gray-500 text-sm sm:text-base"
-          value={imgUrl}
-          onChange={(e) => setImgUrl(e.target.value)}
-        />
-        <p className="text-xs text-gray-500 mt-1 animate-fade-in">
-          Direct link to your image (JPEG, PNG, GIF)
-        </p>
+        
+        {/* Upload Option */}
+        <div className="mb-4">
+          <div className="relative">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className="hidden"
+              id="image-upload"
+            />
+            <label
+              htmlFor="image-upload"
+              className={`w-full flex items-center justify-center px-3 sm:px-4 py-3 sm:py-4 border-2 border-dashed border-gray-600 rounded-xl text-gray-400 hover:border-blue-500 hover:text-blue-400 transition-all duration-200 cursor-pointer text-sm sm:text-base ${
+                uploading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+            >
+              {uploading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span>Uploading to IPFS...</span>
+                </div>
+              ) : selectedFile ? (
+                <div className="flex items-center space-x-2">
+                  <span>📁</span>
+                  <span>{selectedFile.name}</span>
+                  <span className="text-green-400">✓</span>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      clearSelectedFile();
+                    }}
+                    className="ml-2 text-red-400 hover:text-red-300 transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <span>📤</span>
+                  <span>Click to upload image or drag & drop</span>
+                </div>
+              )}
+            </label>
+          </div>
+          
+          <p className="text-xs text-gray-500 mt-1">
+            Supports JPEG, PNG, GIF up to 10MB. Will be stored on IPFS.
+          </p>
+        </div>
+
+        {/* OR Divider */}
+        <div className="relative mb-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-600"></div>
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-gray-900 px-3 text-gray-500">Or use URL</span>
+          </div>
+        </div>
+
+        {/* URL Option */}
+        <div>
+          <input
+            type="url"
+            placeholder="https://example.com/image.jpg"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 group-hover:border-gray-500 text-sm sm:text-base"
+            value={imgUrl}
+            onChange={(e) => setImgUrl(e.target.value)}
+          />
+          <p className="text-xs text-gray-500 mt-1 animate-fade-in">
+            Direct link to your image (JPEG, PNG, GIF)
+          </p>
+        </div>
       </div>
     </div>
 

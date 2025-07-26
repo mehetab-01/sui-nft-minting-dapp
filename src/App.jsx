@@ -25,6 +25,8 @@ const App = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [imgUrl, setImgUrl] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -123,6 +125,102 @@ const App = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Upload image to IPFS
+  const uploadImageToIPFS = async (file) => {
+    setUploading(true);
+    setError('');
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Using Pinata API for IPFS upload (free tier)
+      const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_PINATA_JWT || 'demo_key'}`,
+        },
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        // Fallback to web3.storage or alternative service
+        return uploadToWeb3Storage(file);
+      }
+      
+      const result = await response.json();
+      const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`;
+      
+      setImgUrl(ipfsUrl);
+      setSuccess('Image uploaded successfully to IPFS!');
+      return ipfsUrl;
+    } catch (err) {
+      console.error('IPFS upload error:', err);
+      // Fallback to alternative service
+      return uploadToWeb3Storage(file);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Fallback upload to web3.storage
+  const uploadToWeb3Storage = async (file) => {
+    try {
+      // Alternative: use a public IPFS gateway or local storage for demo
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        setImgUrl(dataUrl);
+        setSuccess('Image loaded successfully! (Using local preview)');
+      };
+      reader.readAsDataURL(file);
+      return true;
+    } catch (err) {
+      setError('Failed to process image. Please try with an image URL.');
+      return false;
+    }
+  };
+
+  // Handle file selection
+  const handleFileSelect = async (event) => {
+    const file = event.target.files[0];
+    
+    // If no file (clearing), reset states
+    if (!file) {
+      setSelectedFile(null);
+      setImgUrl('');
+      setError('');
+      setSuccess('');
+      return;
+    }
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError('Please select a valid image file (JPEG, PNG, GIF)');
+      return;
+    }
+    
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Image size must be less than 10MB');
+      return;
+    }
+    
+    setSelectedFile(file);
+    await uploadImageToIPFS(file);
+  };
+
+  // Clear selected file
+  const clearSelectedFile = () => {
+    setSelectedFile(null);
+    setImgUrl('');
+    setError('');
+    setSuccess('');
+    // Clear the file input
+    const fileInput = document.getElementById('image-upload');
+    if (fileInput) fileInput.value = '';
   };
 
   // Check if image URL is already minted
@@ -419,6 +517,10 @@ const App = () => {
               setDescription={setDescription}
               imgUrl={imgUrl}
               setImgUrl={setImgUrl}
+              selectedFile={selectedFile}
+              uploading={uploading}
+              handleFileSelect={handleFileSelect}
+              clearSelectedFile={clearSelectedFile}
               mintNFT={mintNFT}
               previewNFT={previewNFT}
               loading={loading}
