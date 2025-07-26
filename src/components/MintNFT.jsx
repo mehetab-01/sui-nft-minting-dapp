@@ -1,11 +1,11 @@
 const MintNFTForm = ({ name, setName, description, setDescription, imgUrl, setImgUrl, mintNFT, previewNFT, loading, error, success }) => (
-  <div className="bg-gray-900/60 border border-gray-700 rounded-3xl p-8 backdrop-blur-lg shadow-2xl animate-fade-in hover-lift">
-    <div className="mb-8 animate-slide-down">
-      <h2 className="text-3xl font-bold text-white mb-2">Create NFT</h2>
-      <p className="text-gray-400">Mint your unique digital collectible on Sui</p>
+  <div className="bg-gray-900/60 border border-gray-700 rounded-3xl p-6 sm:p-8 backdrop-blur-lg shadow-2xl animate-fade-in hover-lift">
+    <div className="mb-6 sm:mb-8 animate-slide-down">
+      <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Create NFT</h2>
+      <p className="text-gray-400 text-sm sm:text-base">Mint your unique digital collectible on Sui</p>
     </div>
     
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* NFT Name */}
       <div className="group animate-slide-up stagger-1">
         <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -14,7 +14,7 @@ const MintNFTForm = ({ name, setName, description, setDescription, imgUrl, setIm
         <input
           type="text"
           placeholder="Enter NFT name"
-          className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 group-hover:border-gray-500"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 group-hover:border-gray-500 text-sm sm:text-base"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -27,8 +27,8 @@ const MintNFTForm = ({ name, setName, description, setDescription, imgUrl, setIm
         </label>
         <textarea
           placeholder="Describe your NFT"
-          rows={4}
-          className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 group-hover:border-gray-500 resize-none"
+          rows={3}
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 group-hover:border-gray-500 resize-none text-sm sm:text-base"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
@@ -42,7 +42,7 @@ const MintNFTForm = ({ name, setName, description, setDescription, imgUrl, setIm
         <input
           type="url"
           placeholder="https://example.com/image.jpg"
-          className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 group-hover:border-gray-500"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 group-hover:border-gray-500 text-sm sm:text-base"
           value={imgUrl}
           onChange={(e) => setImgUrl(e.target.value)}
         />
@@ -54,21 +54,21 @@ const MintNFTForm = ({ name, setName, description, setDescription, imgUrl, setIm
 
     {/* Error and Success Messages */}
     {error && (
-      <div className="mt-6 bg-red-900/20 border border-red-700 rounded-xl p-4 animate-slide-in-left">
-        <p className="text-red-400 text-sm">{error}</p>
+      <div className="mt-4 sm:mt-6 bg-red-900/20 border border-red-700 rounded-xl p-3 sm:p-4 animate-slide-in-left">
+        <p className="text-red-400 text-xs sm:text-sm">{error}</p>
       </div>
     )}
     
     {success && (
-      <div className="mt-6 bg-green-900/20 border border-green-700 rounded-xl p-4 animate-slide-in-left">
-        <p className="text-green-400 text-sm">{success}</p>
+      <div className="mt-4 sm:mt-6 bg-green-900/20 border border-green-700 rounded-xl p-3 sm:p-4 animate-slide-in-left">
+        <p className="text-green-400 text-xs sm:text-sm">{success}</p>
       </div>
     )}
 
     {/* Action Buttons */}
-    <div className="flex space-x-4 mt-8 animate-slide-up stagger-4">
+    <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mt-6 sm:mt-8 animate-slide-up stagger-4">
       <button
-        className={`flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover-glow ${
+        className={`flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 sm:px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover-glow text-sm sm:text-base ${
           loading ? 'opacity-50 cursor-not-allowed' : 'hover:from-blue-700 hover:to-purple-700 hover:shadow-xl transform hover:scale-105'
         }`}
         onClick={mintNFT}
@@ -85,7 +85,7 @@ const MintNFTForm = ({ name, setName, description, setDescription, imgUrl, setIm
       </button>
       
       <button
-        className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-xl font-semibold transition-all duration-200 hover-glow transform hover:scale-105"
+        className="px-4 sm:px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-xl font-semibold transition-all duration-200 hover-glow transform hover:scale-105 text-sm sm:text-base"
         onClick={previewNFT}
       >
         Preview

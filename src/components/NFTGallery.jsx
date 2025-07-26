@@ -17,17 +17,17 @@ const NFTGallery = ({ nfts, loading, account, onRefresh }) => {
 
   return (
     <>
-      <div className="bg-gray-900/60 border border-gray-700 rounded-3xl p-8 backdrop-blur-lg shadow-2xl animate-fade-in">
-    <div className="flex items-center justify-between mb-8 animate-slide-down">
+      <div className="bg-gray-900/60 border border-gray-700 rounded-3xl p-6 sm:p-8 backdrop-blur-lg shadow-2xl animate-fade-in">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 animate-slide-down space-y-4 sm:space-y-0">
       <div>
-        <h2 className="text-3xl font-bold text-white mb-3">Your Collection</h2>
-        <p className="text-gray-400">NFTs you've minted on Sui Network</p>
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-3">Your Collection</h2>
+        <p className="text-gray-400 text-sm sm:text-base">NFTs you've minted on Sui Network</p>
       </div>
       <div className="flex items-center space-x-3">
         {account && (
           <button
             onClick={onRefresh}
-            className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
+            className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white text-xs sm:text-sm font-medium rounded-lg transition-colors"
           >
             🔄 Refresh
           </button>
@@ -51,24 +51,24 @@ const NFTGallery = ({ nfts, loading, account, onRefresh }) => {
 
     {/* Wallet connected but loading */}
     {account && loading && (
-      <div className="flex flex-col items-center justify-center py-20 animate-pulse-custom">
-        <div className="w-12 h-12 border-2 border-gray-600 border-t-blue-500 rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-400">Loading your NFTs...</p>
+      <div className="flex flex-col items-center justify-center py-12 sm:py-20 animate-pulse-custom">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 border-2 border-gray-600 border-t-blue-500 rounded-full animate-spin mb-4"></div>
+        <p className="text-gray-400 text-sm sm:text-base">Loading your NFTs...</p>
       </div>
     )}
 
     {/* Wallet connected but no NFTs */}
     {account && !loading && nfts.length === 0 && (
-      <div className="text-center py-20 animate-fade-in">
-        <div className="text-6xl mb-6 animate-float">🎨</div>
-        <h3 className="text-xl font-semibold text-gray-300 mb-3">No NFTs yet</h3>
-        <p className="text-gray-500">Create your first NFT to get started</p>
+      <div className="text-center py-12 sm:py-20 animate-fade-in">
+        <div className="text-4xl sm:text-6xl mb-4 sm:mb-6 animate-float">🎨</div>
+        <h3 className="text-lg sm:text-xl font-semibold text-gray-300 mb-2 sm:mb-3">No NFTs yet</h3>
+        <p className="text-gray-500 text-sm sm:text-base">Create your first NFT to get started</p>
       </div>
     )}
 
     {/* Wallet connected and has NFTs */}
     {account && !loading && nfts.length > 0 && (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
         {nfts.map((nft, index) => (
           <div 
             key={nft.id} 
@@ -92,19 +92,19 @@ const NFTGallery = ({ nfts, loading, account, onRefresh }) => {
               </div>
             </div>
             
-            <div className="p-6">
-              <h3 className="text-lg font-bold text-white mb-2 truncate group-hover:text-blue-400 transition-colors animate-slide-up stagger-1">
+            <div className="p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-bold text-white mb-2 truncate group-hover:text-blue-400 transition-colors animate-slide-up stagger-1">
                 {nft.name}
               </h3>
-              <p className="text-gray-400 text-sm mb-4 line-clamp-2 animate-slide-up stagger-2">
+              <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 animate-slide-up stagger-2">
                 {nft.description}
               </p>
               
               <div className="flex items-center justify-between animate-slide-up stagger-3">
-                <span className="text-xs text-gray-400 font-mono bg-gray-700/50 px-3 py-1 rounded-lg border border-gray-600">
+                <span className="text-xs text-gray-400 font-mono bg-gray-700/50 px-2 sm:px-3 py-1 rounded-lg border border-gray-600">
                   #{nft.id.slice(-6)}
                 </span>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1 sm:space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse-custom"></div>
                   <span className="text-xs text-green-400 font-semibold">Minted</span>
                 </div>

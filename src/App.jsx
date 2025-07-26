@@ -248,17 +248,17 @@ const App = () => {
 
       {/* Header */}
       <header className="relative z-[9990] border-b border-gray-800/50 animate-slide-down">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 animate-slide-in-left">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center hover-glow animate-pulse-custom">
-                <img src="/favicon.ico" alt="Sui NFT Studio" className="w-8 h-8" />
+            <div className="flex items-center space-x-3 sm:space-x-4 animate-slide-in-left">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center hover-glow animate-pulse-custom">
+                <img src="/favicon.ico" alt="Sui NFT Studio" className="w-6 h-6 sm:w-8 sm:h-8" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">
+                <h1 className="text-lg sm:text-2xl font-bold text-white">
                   Sui NFT Studio
                 </h1>
-                <p className="text-gray-400 text-sm">Professional NFT Creation Platform</p>
+                <p className="text-gray-400 text-xs sm:text-sm hidden sm:block">Professional NFT Creation Platform</p>
               </div>
             </div>
             <div className="animate-slide-in-right">
@@ -269,24 +269,24 @@ const App = () => {
       </header>
 
       {/* Main content */}
-      <main className="relative z-20 max-w-7xl mx-auto px-6 py-8 animate-fade-in">
+      <main className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 animate-fade-in">
         {account && (
-          <div className="mb-8 bg-gray-900/50 border border-gray-700 rounded-2xl p-6 backdrop-blur-sm animate-slide-up hover-lift">
-            <div className="flex items-center justify-between">
+          <div className="mb-6 sm:mb-8 bg-gray-900/50 border border-gray-700 rounded-2xl p-4 sm:p-6 backdrop-blur-sm animate-slide-up hover-lift">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
               <div className="flex items-center space-x-3">
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse-custom"></div>
                 <div>
-                  <p className="text-white font-medium">Wallet Connected</p>
-                  <p className="text-gray-400 text-sm font-mono">
-                    {account.address.slice(0, 8)}...{account.address.slice(-6)}
+                  <p className="text-white font-medium text-sm sm:text-base">Wallet Connected</p>
+                  <p className="text-gray-400 text-xs sm:text-sm font-mono">
+                    {account.address.slice(0, 6)}...{account.address.slice(-4)}
                   </p>
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 {mintCapId ? (
                   <div>
                     <p className="text-green-400 text-sm font-medium">✓ Admin Cap Found</p>
-                    <p className="text-gray-500 text-xs font-mono">{mintCapId.slice(0, 8)}...{mintCapId.slice(-6)}</p>
+                    <p className="text-gray-500 text-xs font-mono">{mintCapId.slice(0, 6)}...{mintCapId.slice(-4)}</p>
                   </div>
                 ) : mintCapError ? (
                   <div>
@@ -309,26 +309,26 @@ const App = () => {
         )}
 
         {/* Contract Configuration */}
-        <div className="mb-8 bg-gray-900/60 border border-gray-700 rounded-3xl p-8 backdrop-blur-lg shadow-2xl animate-fade-in hover-lift">
-          <div className="mb-6 animate-slide-down">
-            <h3 className="text-2xl font-bold text-white mb-3">Contract Configuration</h3>
-            <p className="text-gray-400">Configure the smart contract details for minting</p>
+        <div className="mb-6 sm:mb-8 bg-gray-900/60 border border-gray-700 rounded-3xl p-6 sm:p-8 backdrop-blur-lg shadow-2xl animate-fade-in hover-lift">
+          <div className="mb-4 sm:mb-6 animate-slide-down">
+            <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">Contract Configuration</h3>
+            <p className="text-gray-400 text-sm sm:text-base">Configure the smart contract details for minting</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <div className="space-y-3 animate-slide-in-left stagger-1">
-              <label className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Package ID</label>
+              <label className="text-xs sm:text-sm font-semibold text-gray-300 uppercase tracking-wider">Package ID</label>
               <div className="relative">
                 <input
                   type="text"
                   value={contractAddress}
                   onChange={(e) => setContractAddress(e.target.value)}
                   placeholder="Enter package ID (0x...)"
-                  className="w-full bg-gray-800/50 border border-gray-600 rounded-xl px-4 py-3 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover-lift"
+                  className="w-full bg-gray-800/50 border border-gray-600 rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-white font-mono text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover-lift"
                 />
                 <button 
                   onClick={() => navigator.clipboard.writeText(contractAddress)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-400 transition-colors"
+                  className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-400 transition-colors text-sm"
                   title="Copy to clipboard"
                 >
                   📋
@@ -337,61 +337,63 @@ const App = () => {
             </div>
             
             <div className="space-y-3 animate-slide-in-right stagger-2">
-              <label className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Module Name</label>
+              <label className="text-xs sm:text-sm font-semibold text-gray-300 uppercase tracking-wider">Module Name</label>
               <input
                 type="text"
                 value={moduleName}
                 onChange={(e) => setModuleName(e.target.value)}
                 placeholder="Enter module name"
-                className="w-full bg-gray-800/50 border border-gray-600 rounded-xl px-4 py-3 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all hover-lift"
+                className="w-full bg-gray-800/50 border border-gray-600 rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-white font-mono text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all hover-lift"
               />
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mt-6">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 mt-4 sm:mt-6">
             <div className="space-y-3 animate-slide-in-left stagger-3">
-              <label className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Function Name</label>
-              <div className="flex space-x-2">
+              <label className="text-xs sm:text-sm font-semibold text-gray-300 uppercase tracking-wider">Function Name</label>
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                 <input
                   type="text"
                   value={functionName}
                   onChange={(e) => setFunctionName(e.target.value)}
                   placeholder="Enter function name"
-                  className="flex-1 bg-gray-800/50 border border-gray-600 rounded-xl px-4 py-3 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all hover-lift"
+                  className="flex-1 bg-gray-800/50 border border-gray-600 rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-white font-mono text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all hover-lift"
                 />
-                <button
-                  onClick={() => setFunctionName('mint_loyalty')}
-                  className="px-3 py-2 bg-yellow-600/20 border border-yellow-600 text-yellow-400 text-xs rounded-lg hover:bg-yellow-600/30 transition-colors"
-                >
-                  mint_loyalty
-                </button>
-                <button
-                  onClick={() => setFunctionName('mint')}
-                  className="px-3 py-2 bg-green-600/20 border border-green-600 text-green-400 text-xs rounded-lg hover:bg-green-600/30 transition-colors"
-                >
-                  mint
-                </button>
-                <button
-                  onClick={() => setFunctionName('mint_nft')}
-                  className="px-3 py-2 bg-blue-600/20 border border-blue-600 text-blue-400 text-xs rounded-lg hover:bg-blue-600/30 transition-colors"
-                >
-                  mint_nft
-                </button>
-                <button
-                  onClick={() => setFunctionName('create_nft')}
-                  className="px-3 py-2 bg-purple-600/20 border border-purple-600 text-purple-400 text-xs rounded-lg hover:bg-purple-600/30 transition-colors"
-                >
-                  create_nft
-                </button>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setFunctionName('mint_loyalty')}
+                    className="px-2 sm:px-3 py-1 sm:py-2 bg-yellow-600/20 border border-yellow-600 text-yellow-400 text-xs rounded-lg hover:bg-yellow-600/30 transition-colors"
+                  >
+                    mint_loyalty
+                  </button>
+                  <button
+                    onClick={() => setFunctionName('mint')}
+                    className="px-2 sm:px-3 py-1 sm:py-2 bg-green-600/20 border border-green-600 text-green-400 text-xs rounded-lg hover:bg-green-600/30 transition-colors"
+                  >
+                    mint
+                  </button>
+                  <button
+                    onClick={() => setFunctionName('mint_nft')}
+                    className="px-2 sm:px-3 py-1 sm:py-2 bg-blue-600/20 border border-blue-600 text-blue-400 text-xs rounded-lg hover:bg-blue-600/30 transition-colors"
+                  >
+                    mint_nft
+                  </button>
+                  <button
+                    onClick={() => setFunctionName('create_nft')}
+                    className="px-2 sm:px-3 py-1 sm:py-2 bg-purple-600/20 border border-purple-600 text-purple-400 text-xs rounded-lg hover:bg-purple-600/30 transition-colors"
+                  >
+                    create_nft
+                  </button>
+                </div>
               </div>
               <p className="text-xs text-gray-500">Common function names. Try 'mint' if 'mint_nft' doesn't work.</p>
             </div>
           </div>
           
-          <div className="mt-6 flex items-center justify-between">
+          <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse-custom"></div>
-              <span className="text-orange-400 font-semibold">Sui Testnet</span>
+              <span className="text-orange-400 font-semibold text-sm">Sui Testnet</span>
             </div>
             <button
               onClick={() => {
@@ -407,9 +409,9 @@ const App = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           {/* Main form */}
-          <div className="col-span-12 lg:col-span-8 animate-slide-in-left stagger-1">
+          <div className="lg:col-span-8 animate-slide-in-left stagger-1">
             <MintNFTForm
               name={name}
               setName={setName}
@@ -426,20 +428,20 @@ const App = () => {
           </div>
 
           {/* Preview panel */}
-          <div className="col-span-12 lg:col-span-4 animate-slide-in-right stagger-2">
+          <div className="lg:col-span-4 animate-slide-in-right stagger-2">
             {preview && <NFTPreview preview={preview} />}
           </div>
         </div>
 
         {/* NFT Gallery - Always visible */}
-        <div className="mt-12 animate-slide-up stagger-3">
+        <div className="mt-8 sm:mt-12 animate-slide-up stagger-3">
           <NFTGallery nfts={nfts} loading={loading} account={account} onRefresh={fetchNfts} />
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-gray-800/50 mt-20">
-        <div className="max-w-7xl mx-auto px-6 py-8">
+      <footer className="relative z-10 border-t border-gray-800/50 mt-12 sm:mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <div className="text-center space-y-2">
             <p className="text-gray-400 text-sm">
               Powered by <span className="text-white font-medium">Sui Network</span>

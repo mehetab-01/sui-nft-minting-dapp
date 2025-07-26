@@ -33,7 +33,7 @@ const NFTDetailsModal = ({ nft, isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-fade-in"
@@ -41,22 +41,22 @@ const NFTDetailsModal = ({ nft, isOpen, onClose }) => {
       />
       
       {/* Modal */}
-      <div className="relative bg-gray-900 border border-gray-700 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-scale-in">
+      <div className="relative bg-gray-900 border border-gray-700 rounded-2xl sm:rounded-3xl max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl animate-scale-in">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 z-10 w-10 h-10 bg-gray-800/80 hover:bg-gray-700 border border-gray-600 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all hover-lift"
+          className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 w-8 h-8 sm:w-10 sm:h-10 bg-gray-800/80 hover:bg-gray-700 border border-gray-600 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all hover-lift text-sm sm:text-base"
         >
           ✕
         </button>
 
-        <div className="grid md:grid-cols-2 gap-8 p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 p-4 sm:p-6 lg:p-8">
           {/* Image Section */}
-          <div className="space-y-4">
-            <div className="aspect-square bg-gray-800/50 rounded-2xl overflow-hidden border border-gray-600">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="aspect-square bg-gray-800/50 rounded-xl sm:rounded-2xl overflow-hidden border border-gray-600">
               {!imageLoaded && (
                 <div className="w-full h-full flex items-center justify-center animate-pulse">
-                  <div className="text-6xl text-gray-600">🖼️</div>
+                  <div className="text-4xl sm:text-6xl text-gray-600">🖼️</div>
                 </div>
               )}
               <img
@@ -72,16 +72,16 @@ const NFTDetailsModal = ({ nft, isOpen, onClose }) => {
             </div>
             
             {/* Quick Actions */}
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <button
                 onClick={() => window.open(nft.img_url, '_blank')}
-                className="flex-1 px-4 py-2 bg-blue-600/20 border border-blue-600 text-blue-400 rounded-xl hover:bg-blue-600/30 transition-colors text-sm font-medium"
+                className="flex-1 px-3 sm:px-4 py-2 bg-blue-600/20 border border-blue-600 text-blue-400 rounded-xl hover:bg-blue-600/30 transition-colors text-xs sm:text-sm font-medium"
               >
                 🔗 View Original
               </button>
               <button
                 onClick={() => copyToClipboard(nft.img_url, 'image')}
-                className="flex-1 px-4 py-2 bg-purple-600/20 border border-purple-600 text-purple-400 rounded-xl hover:bg-purple-600/30 transition-colors text-sm font-medium"
+                className="flex-1 px-3 sm:px-4 py-2 bg-purple-600/20 border border-purple-600 text-purple-400 rounded-xl hover:bg-purple-600/30 transition-colors text-xs sm:text-sm font-medium"
               >
                 {copySuccess === 'image' ? '✓ Copied!' : '📋 Copy URL'}
               </button>
@@ -89,32 +89,32 @@ const NFTDetailsModal = ({ nft, isOpen, onClose }) => {
           </div>
 
           {/* Details Section */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Title & Description */}
             <div>
-              <h1 className="text-3xl font-bold text-white mb-3 animate-slide-up">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-3 animate-slide-up">
                 {nft.name}
               </h1>
-              <p className="text-gray-300 leading-relaxed animate-slide-up stagger-1">
+              <p className="text-gray-300 leading-relaxed animate-slide-up stagger-1 text-sm sm:text-base">
                 {nft.description || 'No description provided'}
               </p>
             </div>
 
             {/* Metadata Grid */}
-            <div className="space-y-4 animate-slide-up stagger-2">
-              <h3 className="text-lg font-semibold text-white border-b border-gray-700 pb-2">
+            <div className="space-y-3 sm:space-y-4 animate-slide-up stagger-2">
+              <h3 className="text-base sm:text-lg font-semibold text-white border-b border-gray-700 pb-2">
                 NFT Details
               </h3>
               
               {/* Token ID */}
-              <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-xl border border-gray-600">
+              <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-800/50 rounded-xl border border-gray-600">
                 <div>
-                  <label className="text-sm font-medium text-gray-400 uppercase tracking-wider">Token ID</label>
-                  <p className="text-white font-mono text-sm mt-1">{truncateAddress(nft.id)}</p>
+                  <label className="text-xs sm:text-sm font-medium text-gray-400 uppercase tracking-wider">Token ID</label>
+                  <p className="text-white font-mono text-xs sm:text-sm mt-1">{truncateAddress(nft.id)}</p>
                 </div>
                 <button
                   onClick={() => copyToClipboard(nft.id, 'id')}
-                  className="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors text-xs"
+                  className="px-2 sm:px-3 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors text-xs"
                 >
                   {copySuccess === 'id' ? '✓' : '📋'}
                 </button>
